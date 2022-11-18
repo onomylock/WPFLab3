@@ -33,7 +33,7 @@
                     </MenuItem>
                 </Menu>
 
-                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" >
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
                     <Canvas x:Name="OY" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
                     <StackPanel Orientation="Vertical">
                         <Canvas x:Name="Graphic" 
@@ -45,7 +45,7 @@
                                 MouseMove="StackPanel_MouseMove" 
                                 MouseLeftButtonDown="Graphic_MouseLeftButtonDown" 
                                 MouseLeftButtonUp="Graphic_MouseLeftButtonUp"
-                                MouseRightButtonUp="Graphic_MouseRightButtonUp"
+                                MouseRightButtonUp="Graphic_MouseRightButtonUp"                                
                                 MouseWheel="Graphic_MouseWheel"/>
                         <Canvas x:Name="OX" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
                     </StackPanel>

@@ -58,8 +58,13 @@ namespace WPFLab3
 		private ICommand addCommand;
 		public ICommand AddCommand => addCommand ?? (addCommand = new DelegateCommand(() =>
 		{
-			LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
-			Draw();
+			if (!MouseDown)
+			{
+				LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
+				SetStartView();
+				Draw();
+			}
+			
 			//mainWindow.dataGrid.RowBackground = new SolidColorBrush(LinesCollection.Last().ColorLine);
 			
 		}));
@@ -70,7 +75,9 @@ namespace WPFLab3
 			if (SelectedLineItem != null)
 			{
 				LinesCollection.Remove(SelectedLineItem);
+				SetStartView();
 				Draw();
+				SelectedLineItem = null;
 			}
 		}));
 
@@ -320,9 +327,9 @@ namespace WPFLab3
 				//double y_cur = i * dY;
 				double y_cur = gridY[i];
 				myLine.X1 = 0;
-				myLine.Y1 = (y_cur * zoomY - dPoint.Y) * Scale;
+				myLine.Y1 = (Height - y_cur * zoomY - dPoint.Y) * Scale;
 				myLine.X2 = Width;
-				myLine.Y2 = (y_cur * zoomY  - dPoint.Y) * Scale;
+				myLine.Y2 = (Height - y_cur * zoomY  - dPoint.Y) * Scale;
 				mainWindow.Graphic.Children.Add(myLine);
 			}
 		}

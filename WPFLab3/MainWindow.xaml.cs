@@ -51,7 +51,7 @@ namespace WPFLab3
 			//viewModel.SetMousePosition(viewModel.CurrentPoint);
 			
 			if(viewModel.MouseDown)
-			{
+			{				
 				viewModel.ButtonDownPoint = Mouse.GetPosition(this.Graphic);				
 				viewModel.Draw();
 			}
