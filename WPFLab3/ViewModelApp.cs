@@ -27,12 +27,20 @@ namespace WPFLab3
 	public class ViewModelApp : ReactiveObject
 	{
 		public ObservableCollection<ModelApp> LinesCollection;
+		public System.Windows.Point CurrentPoint;
+		public System.Windows.Point ButtonDownPoint;
+		//private ObservableCollection<Line> linesGridX;
+		//private ObservableCollection<Line> linesGridY;
+		private List<double> gridX, gridY;
+		private System.Windows.Point dPoint;
 		public ModelApp SelectedLineItem { get; set; }		
 		public Regime regime = new Regime();
 		private MainWindow mainWindow;
 		private double X_min = 0, Y_min = 0, X_max = 0, Y_max = 0, zoomX = 1, zoomY = 1;
 		private double Height;
 		private double Width;
+		public bool MouseDown { get; set; } = false;
+		public double Scale { get; set; } = 1;
 
 		public ViewModelApp(MainWindow mainWindow)
 		{
@@ -40,7 +48,8 @@ namespace WPFLab3
 			regime = Regime.Lines;			
 			LinesCollection = new ObservableCollection<ModelApp>();
 			LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
-			//LinesCollection.Last().GeoObject = new ObservableCollection<Point> { new Point(0, 0), new Point(3, 4) };
+			LinesCollection.Last().GeoObject = new ObservableCollection<Point> { new Point(1, 2), new Point(9, 7) };
+			dPoint = new System.Windows.Point(0, 0);
 			Height = mainWindow.Graphic.Height;
 			Width = mainWindow.Graphic.Width;
 			Draw();
@@ -134,6 +143,36 @@ namespace WPFLab3
 			canvasObj.Children.Add(textBlock);
 		}
 
+		//private void PixelsToWorldCoord()
+		//{
+
+		//}
+
+		private void CalculateGrid()
+		{			
+			double cur_x = X_min, cur_y = Y_min;
+			gridX = new List<double>();
+			gridY = new List<double>();
+			
+			double stepX = Math.Pow(10, Math.Floor(Math.Log10((X_max - X_min))));
+			double stepY = Math.Pow(10, Math.Floor(Math.Log10((Y_max - Y_min))));
+
+			if (stepX == 0) stepX = 2;
+			if (stepY == 0) stepY = 2;
+
+			while (cur_x <= X_max + 1)
+			{
+				gridX.Add(cur_x);
+				cur_x += stepX;
+			}
+
+			while (cur_y <= Y_max + 1)
+			{
+				gridY.Add(cur_y);
+				cur_y += stepY;
+			}
+		}
+
 		public void SetMousePosition(System.Windows.Point Point)
 		{
 			int lenX = 3;
@@ -144,27 +183,27 @@ namespace WPFLab3
 
 			if(LinesCollection.Count > 0)
 			{
-				X = X / zoomX;
-				Y = (Height - Y) / zoomY;
+				X = (X / Scale + dPoint.X) / (zoomX );
+				Y = (Height - Y / Scale - dPoint.Y) / (zoomY );
 
-				double xdiv = (X_max - X_min) / 10;
+				double xdiv = (X_max - X_min) / gridX.Count;
 				lenX = xdiv.ToString().Length + 1;
-				double ydiv = (Y_max - Y_min) / 10;
+				double ydiv = (Y_max - Y_min) / gridY.Count;
 				lenX = ydiv.ToString().Length + 1;
 			}
 
-			X = Math.Round(X, lenX);
-			Y = Math.Round(Y, lenY);
+			//X = Math.Round(X, lenX);
+			//Y = Math.Round(Y, lenY);
 			var _X = Convert.ToSingle(X).ToString();
 			var _Y = Convert.ToSingle(Y).ToString();
-			if (_X.Length > lenX) _X = _X.Substring(0, lenX);
-			if (_Y.Length > lenY) _Y = _Y.Substring(0, lenY);
+			//if (_X.Length > lenX) _X = _X.Substring(0, lenX);
+			//if (_Y.Length > lenY) _Y = _Y.Substring(0, lenY);
 			mainWindow.LabelX.Content = _X;
 			mainWindow.LabelY.Content = _Y;
 		}
 
 		private void RecalculateZoom()
-		{
+		{			
 			zoomX = Width / Math.Abs(X_max - X_min);
 			zoomY = Height / Math.Abs(Y_max - Y_min);
 		}
@@ -173,42 +212,64 @@ namespace WPFLab3
 		{
 			if (LinesCollection.Count > 0)
 			{
-				
+
 				if (Axis.Children.Count > 0) Axis.Children.Clear();
-				//double Height = mainWindow.StackGraphic.Height;
-				//double Width = mainWindow.StackGraphic.Width;
 
-				double dX = Width / 10;
-				double dY = Height / 10;
-
-				double dAxis = Math.Abs(max - min) / 10;				
 				if (AxisFlag)
-				{					
-					for (int i = 0; i < 10; i++)
+				{
+					foreach (double x in gridX)
 					{
-						double cur = min + i * dAxis;
-						string text = cur.ToString();
-
-						if (text.Length > 5)
-							text = text.Substring(0, 5);						
-						
-						Text(Axis, i * dX - 2, 8, text, Color.FromRgb(0, 0, 0));													
+						if (x * zoomX < Width - 5 && x * zoomX > 10)
+							Text(Axis, (x * zoomX - 2 - dPoint.X) * Scale, 8, x.ToString(), Color.FromRgb(0, 0, 0));
 					}
 				}
 				else
-				{						
-					for (int i = 10; i > 0; i--)
+				{
+					foreach (double y in gridY)
 					{
-						double cur = max - min - i * dAxis;
-						string text = cur.ToString();
-
-						if (text.Length > 5)
-							text = text.Substring(0, 5);						
-						
-						Text(Axis, 15, i * dY - 12, text, Color.FromRgb(0, 0, 0));						
+						if (y * zoomY < Height - 5 && y * zoomY > 5)
+							Text(Axis, 15, (Height - y * zoomY - 5 - dPoint.Y) * Scale, y.ToString(), Color.FromRgb(0, 0, 0));
 					}
-				}								
+				}
 			}
+			//if (LinesCollection.Count > 0)
+			//{
+
+			//	if (Axis.Children.Count > 0) Axis.Children.Clear();
+			//	//double Height = mainWindow.StackGraphic.Height;
+			//	//double Width = mainWindow.StackGraphic.Width;
+
+			//	double dX = Width / gridX.Count;
+			//	double dY = Height / gridY.Count;
+
+			//	double dAxis = Math.Abs(max - min) / gridX.Count;				
+			//	if (AxisFlag)
+			//	{					
+			//		for (int i = 0; i < 10; i++)
+			//		{
+			//			double cur = min + i * dAxis;
+			//			string text = cur.ToString();
+
+			//			if (text.Length > 5)
+			//				text = text.Substring(0, 5);						
+
+			//			Text(Axis, i * dX - 2, 8, text, Color.FromRgb(0, 0, 0));													
+			//		}
+			//	}
+			//	else
+			//	{						
+			//		for (int i = 10; i > 0; i--)
+			//		{
+			//			double cur = max - min - i * dAxis;
+			//			string text = cur.ToString();
+
+			//			if (text.Length > 5)
+			//				text = text.Substring(0, 5);						
+
+			//			Text(Axis, 15, i * dY - 12, text, Color.FromRgb(0, 0, 0));						
+			//		}
+			//	}								
+			//}
 		}
 
 		private void boundsCalculation()
@@ -231,31 +292,37 @@ namespace WPFLab3
 		}
 					
 		private void DrawGrid()
-		{									
-			double dX = Width / 10;
-			double dY = Height / 10;
-
-			for (int i = 0; i < 10; ++i)
+		{
+			dPoint.X += (CurrentPoint.X - ButtonDownPoint.X) / Width * 20;
+			dPoint.Y += (CurrentPoint.Y - ButtonDownPoint.Y) / Height * 20;
+			double dX = Width / gridX.Count;
+			double dY = Height / gridY.Count;
+			
+			for (int i = 0; i < gridX.Count; ++i)
 			{
 				Line myLine = new Line();
-				myLine.Stroke = System.Windows.Media.Brushes.LightGray;				
-				double x_cur = i * dX;
-				myLine.X1 = x_cur;
+				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
+				//double x_cur = i * dX;
+				double x_cur = gridX[i];
+				myLine.X1 = (x_cur * zoomX - dPoint.X) * Scale;
+				//myLine.X1 = x_cur;
 				myLine.Y1 = 0;
-				myLine.X2 = x_cur;
+				myLine.X2 = (x_cur * zoomX - dPoint.X) * Scale;
+				//myLine.X2 = x_cur;
 				myLine.Y2 = Height;
 				mainWindow.Graphic.Children.Add(myLine);
 			}
 
-			for (int i = 0; i < 10; ++i)
+			for (int i = 0; i < gridY.Count; ++i)
 			{
 				Line myLine = new Line();
 				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
-				double y_cur = i * dY;
+				//double y_cur = i * dY;
+				double y_cur = gridY[i];
 				myLine.X1 = 0;
-				myLine.Y1 = y_cur;
+				myLine.Y1 = (y_cur * zoomY - dPoint.Y) * Scale;
 				myLine.X2 = Width;
-				myLine.Y2 = y_cur;
+				myLine.Y2 = (y_cur * zoomY  - dPoint.Y) * Scale;
 				mainWindow.Graphic.Children.Add(myLine);
 			}
 		}
@@ -266,10 +333,8 @@ namespace WPFLab3
 			double dy = Y_min < 0 ? Y_min : 0;			
 
 			if(modelApp.GeoObject != null && modelApp.GeoObject.Count > 0)
-			{
-				
-				Polyline myPolyline = new Polyline();
-				//myPolyline.Stroke = new SolidColorBrush(modelApp.ColorLine);
+			{				
+				Polyline myPolyline = new Polyline();				
 				myPolyline.Stroke = modelApp.ColorLine;
 				myPolyline.StrokeThickness = 3;
 				myPolyline.FillRule = FillRule.EvenOdd;				
@@ -279,7 +344,7 @@ namespace WPFLab3
 
 				foreach (Point item in SortPoints)
 				{
-					myPointCollection.Add(new System.Windows.Point((item.X - dx) * zoomX, (Height - (item.Y - dy) * zoomY)));
+					myPointCollection.Add(new System.Windows.Point(((item.X - dx) * zoomX - dPoint.X) * Scale, ((Height - (item.Y - dy) * zoomY) - dPoint.Y) * Scale));
 				}
 				myPolyline.Points = myPointCollection;
 				mainWindow.Graphic.Children.Add(myPolyline);
@@ -325,12 +390,11 @@ namespace WPFLab3
 		//	}
 		}
 
-
-
 		public void Draw()
 		{
 			if (mainWindow.Graphic.Children.Count > 0) mainWindow.Graphic.Children.Clear();
 			boundsCalculation();
+			CalculateGrid();
 			RecalculateZoom();
 			DrawGrid();
 			//
@@ -360,5 +424,14 @@ namespace WPFLab3
 			DrawAxis(mainWindow.OX, X_min, X_max, true);
 			DrawAxis(mainWindow.OY, Y_min, Y_max, false);			
 		}
+
+		public void SetStartView()
+		{
+			dPoint.X = 0;
+			dPoint.Y = 0;
+			Scale = 1;
+			boundsCalculation();
+			Draw();
+		}		
 	}
 }

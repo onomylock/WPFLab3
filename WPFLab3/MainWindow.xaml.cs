@@ -47,34 +47,55 @@ namespace WPFLab3
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			var Point = Mouse.GetPosition(this.Graphic);			
-			viewModel.SetMousePosition(Point);
-
-			//int lenX = 3;
-			//int lenY = 3;
-			//if (Curves.Count > 0) 
-			//{
-			//	X = X / zoomX + xsign_off;
-			//	Y = (Panel1.Height - Y) / zoomY + ysign_off;
-
-			//	double xdiv = (maxX - minX) / Convert.ToDouble(10);
-			//	lenX = (xdiv.ToString()).Length + 1;
-			//	double ydiv = (maxY - minY) / Convert.ToDouble(10);
-			//	lenY = (ydiv.ToString()).Length + 1;
-			//}
-			//X = Math.Round(X, lenX);
-			//Y = Math.Round(Y, lenY);
-			//var _X = Convert.ToSingle(X).ToString();
-			//var _Y = Convert.ToSingle(Y).ToString();
-			//if (_X.Length > lenX) _X = _X.Substring(0, lenX);
-			//if (_Y.Length > lenY) _Y = _Y.Substring(0, lenY);
-			//Label1.Content = _X;
-			//Label2.Content = _Y;
+			//viewModel.CurrentPoint = Mouse.GetPosition(this.Graphic);			
+			//viewModel.SetMousePosition(viewModel.CurrentPoint);
+			
+			if(viewModel.MouseDown)
+			{
+				viewModel.ButtonDownPoint = Mouse.GetPosition(this.Graphic);				
+				viewModel.Draw();
+			}
+			else
+			{
+				viewModel.CurrentPoint = Mouse.GetPosition(this.Graphic);
+				viewModel.SetMousePosition(viewModel.CurrentPoint);
+			}
 		}
 
 		private void dataGridPoints_CurrentCellChanged(object sender, EventArgs e)
 		{
 			viewModel.Draw();
+		}
+
+		private void Graphic_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			viewModel.MouseDown = true;
+		}
+
+		private void Graphic_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			viewModel.MouseDown = false;
+		}
+
+		private void Graphic_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			viewModel.SetStartView();
+		}
+
+		private void Graphic_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			double scal = e.Delta < 0 ? 1.05 : 1 / 1.05;
+			viewModel.Scale *= scal;
+			viewModel.Draw();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			if (dataGrid.SelectedItem != null)
+			{
+				viewModel.SelectedLineItem.SetRandomColor();
+				viewModel.Draw();
+			}
 		}
 	}
 }

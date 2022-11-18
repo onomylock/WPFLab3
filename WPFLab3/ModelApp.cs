@@ -79,6 +79,14 @@ namespace WPFLab3
 			return tmpSortedPoints;
 		}
 
+		public void SetRandomColor()
+		{
+			var r = new Random();
+			var bytes = new byte[4];
+			r.NextBytes(bytes);
+			ColorLine = new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]));
+		}
+
 		public (Point, Point) FindMinMax()
 		{
 			if (GeoObject != null && GeoObject.Count > 0)

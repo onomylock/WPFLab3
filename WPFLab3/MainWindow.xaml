@@ -33,11 +33,21 @@
                     </MenuItem>
                 </Menu>
 
-                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
-                    <Canvas x:Name="OY" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White"/>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" >
+                    <Canvas x:Name="OY" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
                     <StackPanel Orientation="Vertical">
-                        <Canvas x:Name="Graphic" Height="700" Width="870" Background="White" HorizontalAlignment="Right" MouseMove="StackPanel_MouseMove"/>
-                        <Canvas x:Name="OX" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White"/>
+                        <Canvas x:Name="Graphic" 
+                                Height="700" 
+                                Width="870" 
+                                Background="White" 
+                                ClipToBounds="True"
+                                HorizontalAlignment="Right" 
+                                MouseMove="StackPanel_MouseMove" 
+                                MouseLeftButtonDown="Graphic_MouseLeftButtonDown" 
+                                MouseLeftButtonUp="Graphic_MouseLeftButtonUp"
+                                MouseRightButtonUp="Graphic_MouseRightButtonUp"
+                                MouseWheel="Graphic_MouseWheel"/>
+                        <Canvas x:Name="OX" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
                     </StackPanel>
                 </StackPanel>
                 
@@ -73,7 +83,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Background="{Binding ColorLine}"/>
+                                        <Button Background="{Binding ColorLine}" Click="Button_Click"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

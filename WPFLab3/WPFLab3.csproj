@@ -84,7 +84,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Geometry.cs" />
     <Compile Include="ModelApp.cs" />
     <Compile Include="Notyfier.cs" />
     <Compile Include="Tools.cs" />
