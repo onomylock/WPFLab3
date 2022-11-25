@@ -75,7 +75,8 @@ namespace WPFLab3
 			if (SelectedLineItem != null)
 			{
 				LinesCollection.Remove(SelectedLineItem);
-				SetStartView();
+				boundsCalculation();
+				SetStartView();				
 				Draw();
 				SelectedLineItem = null;
 			}
@@ -156,13 +157,14 @@ namespace WPFLab3
 		//}
 
 		private void CalculateGrid()
-		{			
+		{
+			boundsCalculation();
 			double cur_x = X_min, cur_y = Y_min;
 			gridX = new List<double>();
 			gridY = new List<double>();
 			
-			double stepX = Math.Pow(10, Math.Floor(Math.Log10((X_max - X_min))));
-			double stepY = Math.Pow(10, Math.Floor(Math.Log10((Y_max - Y_min))));
+			double stepX = Math.Pow(10, Math.Floor(Math.Log10((X_max - X_min - 1))));
+			double stepY = Math.Pow(10, Math.Floor(Math.Log10((Y_max - Y_min - 1))));
 
 			if (stepX == 0) stepX = 2;
 			if (stepY == 0) stepY = 2;
@@ -226,7 +228,7 @@ namespace WPFLab3
 				{
 					foreach (double x in gridX)
 					{
-						if (x * zoomX < Width - 5 && x * zoomX > 10)
+						//if (x * zoomX < Width - 5 && x * zoomX > 10)
 							Text(Axis, (x * zoomX - 2 - dPoint.X) * Scale, 8, x.ToString(), Color.FromRgb(0, 0, 0));
 					}
 				}
@@ -234,7 +236,7 @@ namespace WPFLab3
 				{
 					foreach (double y in gridY)
 					{
-						if (y * zoomY < Height - 5 && y * zoomY > 5)
+						//if (y * zoomY < Height - 5 && y * zoomY > 5)
 							Text(Axis, 15, (Height - y * zoomY - 5 - dPoint.Y) * Scale, y.ToString(), Color.FromRgb(0, 0, 0));
 					}
 				}
@@ -283,8 +285,14 @@ namespace WPFLab3
 		{
 			Point Min, Max;
 
+			X_min = 0;
+			Y_min = 0;
+			X_max = 0;
+			Y_max = 0;
+
 			foreach (ModelApp item in LinesCollection)
 			{
+				
 				(Min, Max) = item.FindMinMax();
 
 				if(Min != null && Max != null)
