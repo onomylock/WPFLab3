@@ -151,11 +151,6 @@ namespace WPFLab3
 			canvasObj.Children.Add(textBlock);
 		}
 
-		//private void PixelsToWorldCoord()
-		//{
-
-		//}
-
 		private void CalculateGrid()
 		{
 			boundsCalculation();
@@ -241,44 +236,6 @@ namespace WPFLab3
 					}
 				}
 			}
-			//if (LinesCollection.Count > 0)
-			//{
-
-			//	if (Axis.Children.Count > 0) Axis.Children.Clear();
-			//	//double Height = mainWindow.StackGraphic.Height;
-			//	//double Width = mainWindow.StackGraphic.Width;
-
-			//	double dX = Width / gridX.Count;
-			//	double dY = Height / gridY.Count;
-
-			//	double dAxis = Math.Abs(max - min) / gridX.Count;				
-			//	if (AxisFlag)
-			//	{					
-			//		for (int i = 0; i < 10; i++)
-			//		{
-			//			double cur = min + i * dAxis;
-			//			string text = cur.ToString();
-
-			//			if (text.Length > 5)
-			//				text = text.Substring(0, 5);						
-
-			//			Text(Axis, i * dX - 2, 8, text, Color.FromRgb(0, 0, 0));													
-			//		}
-			//	}
-			//	else
-			//	{						
-			//		for (int i = 10; i > 0; i--)
-			//		{
-			//			double cur = max - min - i * dAxis;
-			//			string text = cur.ToString();
-
-			//			if (text.Length > 5)
-			//				text = text.Substring(0, 5);						
-
-			//			Text(Axis, 15, i * dY - 12, text, Color.FromRgb(0, 0, 0));						
-			//		}
-			//	}								
-			//}
 		}
 
 		private void boundsCalculation()

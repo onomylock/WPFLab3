@@ -47,8 +47,6 @@ namespace WPFLab3
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			//viewModel.CurrentPoint = Mouse.GetPosition(this.Graphic);			
-			//viewModel.SetMousePosition(viewModel.CurrentPoint);
 			
 			if(viewModel.MouseDown)
 			{				
