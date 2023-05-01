@@ -84,10 +84,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Direct.cs" />
+    <Compile Include="Drawing.cs" />
+    <Compile Include="Inverce.cs" />
     <Compile Include="ModelApp.cs" />
-    <Compile Include="Notyfier.cs" />
+    <Compile Include="ModelCalulation.cs" />
+    <Compile Include="TabViewModelBase.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ViewModelApp.cs" />
+    <Compile Include="ViewModelCurve.cs" />
+    <Compile Include="ViewModelView2D.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

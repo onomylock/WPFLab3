@@ -6,37 +6,51 @@
         xmlns:local="clr-namespace:WPFLab3" d:DataContext="{d:DesignInstance Type=local:ModelApp}"
         mc:Ignorable="d"
         Title="MainWindow" Height="850" Width="1200" WindowStartupLocation="CenterOwner">
-    <TabControl x:Name="TabControl">
-        <TabItem Header="Graph">
-            <Grid Background="Bisque">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <!--<ColumnDefinition Width="63*"/>-->
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="Save File" Command="{Binding SaveFileCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Edit Grath">
+                <MenuItem Header="Lines" Command="{Binding DrawLinesCommand}"/>
+                <MenuItem Header="Spline" Command="{Binding DrawSplineCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Calculations">
+                <MenuItem Header="Set directory calculation" Command="{Binding SetDirectoryCalulationCommand}"/>
+                <MenuItem Header="Start direct calculation" Command="{Binding StartDirectCalulation}"/>
+                <MenuItem Header="Start inverce calculation" Command="{Binding StartInverceCalulation}"/>
+            </MenuItem>
+        </Menu>
 
-                <GridSplitter Grid.Column="1" Grid.RowSpan="2" ShowsPreview="False" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="AliceBlue"/>
+        <TabControl x:Name="TabControl" Grid.Row="1" SelectionChanged="TabControl_SelectionChanged" ItemsSource="{Binding ListTabs}">
+            <TabControl.Resources>
+                <DataTemplate DataType="{x:Type vm:TabCurve}"/>
+                <DataTemplate DataType="{x:Type vm:TabView2D}"/>
+            </TabControl.Resources>
+            <TabItem Header="Curve">
+                <Grid Background="Bisque">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="63*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-                    <MenuItem Header="File">
-                        <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
-                        <MenuItem Header="Save File" Command="{Binding SaveFileCommand}"/>
-                    </MenuItem>
-                    <MenuItem Header="Edit Grath">
-                        <MenuItem Header="Lines" Command="{Binding DrawLinesCommand}"/>
-                        <MenuItem Header="Spline" Command="{Binding DrawSplineCommand}"/>
-                    </MenuItem>
-                </Menu>
+                    <GridSplitter Grid.Column="1" Grid.RowSpan="2" ShowsPreview="False" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="AliceBlue"/>
 
-                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
-                    <Canvas x:Name="OY" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
-                    <StackPanel Orientation="Vertical">
-                        <Canvas x:Name="Graphic" 
+                    <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                        <Canvas x:Name="OYCurve" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
+                        <StackPanel Orientation="Vertical">
+                            <Canvas x:Name="GraphicCurve" 
                                 Height="700" 
                                 Width="870" 
                                 Background="White" 
@@ -47,73 +61,134 @@
                                 MouseLeftButtonUp="Graphic_MouseLeftButtonUp"
                                 MouseRightButtonUp="Graphic_MouseRightButtonUp"                                
                                 MouseWheel="Graphic_MouseWheel"/>
-                        <Canvas x:Name="OX" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
+                            <Canvas x:Name="OXCurve" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                
-                
-                
 
-                <Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+                    <Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="8*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel x:Name="StackBotton" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>
+                                <Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin=" 25,0,0,0">
+                                <Label Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Label Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            </StackPanel>
+                            <StackPanel x:Name="StackLabelXY" Orientation="Vertical" VerticalAlignment="Center">
+                                <Label x:Name="LabelX" Content="Lable" Width="60" Height="25" RenderTransformOrigin="0.538,0.435"/>
+                                <Label x:Name="LabelY" Content="Lable" HorizontalAlignment="Left" Width="60" Height="25" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <DataGrid x:Name="dataGrid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Lines" Binding="{Binding Legend}"/>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Background="{Binding ColorLine}" Click="Button_Click"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="View2D">
+                <Grid Background="Bisque">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="8*"/>
+                        <RowDefinition Height="25"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="63*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <StackPanel x:Name="StackBotton" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>
-                            <Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin=" 25,0,0,0">
-                            <Label Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Label Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        </StackPanel>
-                        <StackPanel x:Name="StackLabelXY" Orientation="Vertical" VerticalAlignment="Center">
-                            <Label x:Name="LabelX" Content="Lable" Width="60" Height="25" RenderTransformOrigin="0.538,0.435"/>
-                            <Label x:Name="LabelY" Content="Lable" HorizontalAlignment="Left" Width="60" Height="25" VerticalAlignment="Center"/>
+                    <GridSplitter Grid.Column="1" Grid.RowSpan="2" ShowsPreview="False" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="AliceBlue"/>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                        <Canvas x:Name="OYView2D" Height="700" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
+                        <StackPanel Orientation="Vertical">
+                            <Canvas x:Name="GraphicView2D" 
+                                Height="700" 
+                                Width="870" 
+                                Background="White" 
+                                ClipToBounds="True"
+                                HorizontalAlignment="Right" 
+                                MouseMove="StackPanel_MouseMove" 
+                                MouseLeftButtonDown="Graphic_MouseLeftButtonDown" 
+                                MouseLeftButtonUp="Graphic_MouseLeftButtonUp"
+                                MouseRightButtonUp="Graphic_MouseRightButtonUp"                                
+                                MouseWheel="Graphic_MouseWheel"/>
+                            <Canvas x:Name="OXView2D" Height="45" Width="870" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" ClipToBounds="True"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <!--<Button x:Name="Add" Content="Add" HorizontalAlignment="Left" MaxWidth="50" MinWidth="50" Click="Add_Click" Grid.Row="1" Grid.Column="0"/>-->
-                    <!--<Label Content="X:" HorizontalAlignment="Center" VerticalAlignment="Top"-->
-                    <DataGrid x:Name="dataGrid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Lines" Binding="{Binding Legend}"/>
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Background="{Binding ColorLine}" Click="Button_Click"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                        
-                    </DataGrid>
+                    <!--<Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="8*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel x:Name="StackBotton" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>
+                                <Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin=" 25,0,0,0">
+                                <Label Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Label Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            </StackPanel>
+                            <StackPanel x:Name="StackLabelXY" Orientation="Vertical" VerticalAlignment="Center">
+                                <Label x:Name="LabelX" Content="Lable" Width="60" Height="25" RenderTransformOrigin="0.538,0.435"/>
+                                <Label x:Name="LabelY" Content="Lable" HorizontalAlignment="Left" Width="60" Height="25" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <DataGrid x:Name="dataGrid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Lines" Binding="{Binding Legend}"/>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Background="{Binding ColorLine}" Click="Button_Click"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>-->
                 </Grid>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Tabl">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="25"/>
-                </Grid.RowDefinitions>
-                <DataGrid x:Name="dataGridPoints" Grid.Row="0" AutoGenerateColumns="False" CurrentCellChanged="dataGridPoints_CurrentCellChanged">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="X" Binding="{Binding X}"/>
-                        <DataGridTextColumn Header="Y" Binding="{Binding Y}"/>
-                    </DataGrid.Columns>
-                    <!--<DataGrid.Columns>
-                        -->
-                    <!--<DataGridTextColumn Header="X" Binding="{Binding }"/>
-                        <DataGridTextColumn Header="Y"/>-->
-                    <!--
-                    </DataGrid.Columns>-->
-                </DataGrid>
-                <Button x:Name="AddPoint" Content="Add" HorizontalAlignment="Left" MaxWidth="50" MinWidth="50" Command="{Binding AddPointCommand}" Grid.Row="1" Grid.Column="0"/>
-            </Grid>
-        </TabItem>
-    </TabControl>
+            </TabItem>
+            <TabItem Header="Tabl">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid x:Name="dataGridPoints" Grid.Row="0" AutoGenerateColumns="False" CurrentCellChanged="dataGridPoints_CurrentCellChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="X" Binding="{Binding X}"/>
+                            <DataGridTextColumn Header="Y" Binding="{Binding Y}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="AddPoint" Content="Add" HorizontalAlignment="Left" MaxWidth="50" MinWidth="50" Command="{Binding AddPointCommand}" Grid.Row="1" Grid.Column="0"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+        
+    </Grid>
+
 
 </Window>

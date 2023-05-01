@@ -14,8 +14,10 @@ namespace WPFLab3
 {
 	public class Point : ReactiveObject
 	{		
-		[Reactive]public double X { get; set; }
-		[Reactive]public double Y { get; set; }
+		[Reactive]
+		public double X { get; set; }
+		[Reactive]
+		public double Y { get; set; }
 
 		public Point()
 		{
@@ -34,8 +36,10 @@ namespace WPFLab3
 	{
 		public ObservableCollection<Point> GeoObject { get; set; }
 
-		[Reactive]public SolidColorBrush ColorLine { get; set; }
-		[Reactive]public string Legend { get; set; }
+		[Reactive]
+		public SolidColorBrush ColorLine { get; set; }
+		[Reactive]
+		public string Legend { get; set; }
 
 		public ModelApp(string legend)
 		{
@@ -44,8 +48,7 @@ namespace WPFLab3
 			var r = new Random();
 			var bytes = new byte[4];
 			r.NextBytes(bytes);
-			ColorLine = new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]));
-			//ColorLine = Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);						
+			ColorLine = new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]));			
 		}
 
 		public ModelApp(ObservableCollection<Point> geoObject, string legend)
@@ -55,8 +58,7 @@ namespace WPFLab3
 			var r = new Random();
 			var bytes = new byte[4];
 			r.NextBytes(bytes);
-			ColorLine = new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]));
-			//ColorLine = Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);
+			ColorLine = new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]));			
 		}
 		
 		public Point[] SortedPoints()

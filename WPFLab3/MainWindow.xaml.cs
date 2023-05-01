@@ -24,14 +24,24 @@ namespace WPFLab3
 		public MainWindow()
 		{
 			InitializeComponent();
-			OX.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			OX.Arrange(new Rect(0, 0, OX.DesiredSize.Width, OX.DesiredSize.Height));
-			OY.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			OY.Arrange(new Rect(0, 0, OY.DesiredSize.Width, OY.DesiredSize.Height));
-			Graphic.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			Graphic.Arrange(new Rect(0, 0, Graphic.DesiredSize.Width, Graphic.DesiredSize.Height));
+			OXCurve.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			OXCurve.Arrange(new Rect(0, 0, OXCurve.DesiredSize.Width, OXCurve.DesiredSize.Height));
+			OYCurve.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			OYCurve.Arrange(new Rect(0, 0, OYCurve.DesiredSize.Width, OYCurve.DesiredSize.Height));
+			GraphicCurve.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			GraphicCurve.Arrange(new Rect(0, 0, GraphicCurve.DesiredSize.Width, GraphicCurve.DesiredSize.Height));
+
+			OXView2D.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			OXView2D.Arrange(new Rect(0, 0, OXView2D.DesiredSize.Width, OXView2D.DesiredSize.Height));
+			OYView2D.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			OYView2D.Arrange(new Rect(0, 0, OYView2D.DesiredSize.Width, OYView2D.DesiredSize.Height));
+			GraphicView2D.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			GraphicView2D.Arrange(new Rect(0, 0, GraphicView2D.DesiredSize.Width, GraphicView2D.DesiredSize.Height));
+
 			viewModel = new ViewModelApp(this);
 			DataContext = viewModel;
+			
+			//TabControl.DataContext = viewModel;
 			dataGrid.ItemsSource = viewModel.LinesCollection;			
 			dataGrid.SelectionChanged += DataGrid_SelectionChanged;		
 		}
@@ -46,16 +56,15 @@ namespace WPFLab3
 		}
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
-		{
-			
+		{				
 			if(viewModel.MouseDown)
 			{				
-				viewModel.ButtonDownPoint = Mouse.GetPosition(this.Graphic);				
+				viewModel.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);				
 				viewModel.Draw();
 			}
 			else
 			{
-				viewModel.CurrentPoint = Mouse.GetPosition(this.Graphic);
+				viewModel.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
 				viewModel.SetMousePosition(viewModel.CurrentPoint);
 			}
 		}
@@ -94,6 +103,14 @@ namespace WPFLab3
 				viewModel.SelectedLineItem.SetRandomColor();
 				viewModel.Draw();
 			}
+		}
+
+		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if(e.Source is TabControl tc)
+			{
+				viewModel.CurrentTab = tc.SelectedItem;
+			}	
 		}
 	}
 }

@@ -26,11 +26,10 @@ namespace WPFLab3
 
 	public class ViewModelApp : ReactiveObject
 	{
+		public object CurrentTab { get; set; }
 		public ObservableCollection<ModelApp> LinesCollection;
 		public System.Windows.Point CurrentPoint;
 		public System.Windows.Point ButtonDownPoint;
-		//private ObservableCollection<Line> linesGridX;
-		//private ObservableCollection<Line> linesGridY;
 		private List<double> gridX, gridY;
 		private System.Windows.Point dPoint;
 		public ModelApp SelectedLineItem { get; set; }		
@@ -39,6 +38,7 @@ namespace WPFLab3
 		private double X_min = 0, Y_min = 0, X_max = 0, Y_max = 0, zoomX = 1, zoomY = 1;
 		private double Height;
 		private double Width;
+		private ModelCalulation modelCalulation = new ModelCalulation();
 		public bool MouseDown { get; set; } = false;
 		public double Scale { get; set; } = 1;
 
@@ -50,10 +50,32 @@ namespace WPFLab3
 			LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
 			LinesCollection.Last().GeoObject = new ObservableCollection<Point> { new Point(1, 2), new Point(9, 7) };
 			dPoint = new System.Windows.Point(0, 0);
-			Height = mainWindow.Graphic.Height;
-			Width = mainWindow.Graphic.Width;
-			Draw();
+			Height = mainWindow.GraphicCurve.Height;
+			Width = mainWindow.GraphicCurve.Width;
+			Draw();						
 		}
+
+		private ICommand startDirectionCalulation;
+		public ICommand StartDirectionCalulation => startDirectionCalulation ?? (startDirectionCalulation = new DelegateCommand(() =>
+		{
+			modelCalulation.StartCalulationDirect();
+		}));
+
+		private ICommand startInverceCalulation;
+		public ICommand StartInverceCalulation => startInverceCalulation ?? (startInverceCalulation = new DelegateCommand(() =>
+		{
+
+		}));
+
+		private ICommand setDirectoryCalulationCommand;
+		public ICommand SetDirectoryCalulationCommand => setDirectoryCalulationCommand ?? (setDirectoryCalulationCommand = new DelegateCommand(() =>
+		{
+			using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+			{
+				System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+				modelCalulation.SetInputCalculationData(dialog.SelectedPath);				
+			}
+		}));
 
 		private ICommand addCommand;
 		public ICommand AddCommand => addCommand ?? (addCommand = new DelegateCommand(() =>
@@ -63,10 +85,7 @@ namespace WPFLab3
 				LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
 				SetStartView();
 				Draw();
-			}
-			
-			//mainWindow.dataGrid.RowBackground = new SolidColorBrush(LinesCollection.Last().ColorLine);
-			
+			}									
 		}));
 
 		private ICommand removeCommand;
@@ -87,8 +106,7 @@ namespace WPFLab3
 		{
 			if(SelectedLineItem != null)
 			{
-				SelectedLineItem.GeoObject.Add(new Point());
-				//DrawLines(SelectedLineItem);
+				SelectedLineItem.GeoObject.Add(new Point());				
 			}			
 		}));
 
@@ -179,8 +197,6 @@ namespace WPFLab3
 
 		public void SetMousePosition(System.Windows.Point Point)
 		{
-			int lenX = 3;
-			int lenY = 3;
 
 			double X = Point.X;
 			double Y = Point.Y;
@@ -190,18 +206,11 @@ namespace WPFLab3
 				X = (X / Scale + dPoint.X) / (zoomX );
 				Y = (Height - Y / Scale - dPoint.Y) / (zoomY );
 
-				double xdiv = (X_max - X_min) / gridX.Count;
-				lenX = xdiv.ToString().Length + 1;
-				double ydiv = (Y_max - Y_min) / gridY.Count;
-				lenX = ydiv.ToString().Length + 1;
+				double xdiv = (X_max - X_min) / gridX.Count;				
+				double ydiv = (Y_max - Y_min) / gridY.Count;				
 			}
-
-			//X = Math.Round(X, lenX);
-			//Y = Math.Round(Y, lenY);
 			var _X = Convert.ToSingle(X).ToString();
-			var _Y = Convert.ToSingle(Y).ToString();
-			//if (_X.Length > lenX) _X = _X.Substring(0, lenX);
-			//if (_Y.Length > lenY) _Y = _Y.Substring(0, lenY);
+			var _Y = Convert.ToSingle(Y).ToString();			
 			mainWindow.LabelX.Content = _X;
 			mainWindow.LabelY.Content = _Y;
 		}
@@ -273,29 +282,25 @@ namespace WPFLab3
 			for (int i = 0; i < gridX.Count; ++i)
 			{
 				Line myLine = new Line();
-				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
-				//double x_cur = i * dX;
+				myLine.Stroke = System.Windows.Media.Brushes.LightGray;				
 				double x_cur = gridX[i];
-				myLine.X1 = (x_cur * zoomX - dPoint.X) * Scale;
-				//myLine.X1 = x_cur;
+				myLine.X1 = (x_cur * zoomX - dPoint.X) * Scale;				
 				myLine.Y1 = 0;
-				myLine.X2 = (x_cur * zoomX - dPoint.X) * Scale;
-				//myLine.X2 = x_cur;
+				myLine.X2 = (x_cur * zoomX - dPoint.X) * Scale;				
 				myLine.Y2 = Height;
-				mainWindow.Graphic.Children.Add(myLine);
+				mainWindow.GraphicCurve.Children.Add(myLine);
 			}
 
 			for (int i = 0; i < gridY.Count; ++i)
 			{
 				Line myLine = new Line();
-				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
-				//double y_cur = i * dY;
+				myLine.Stroke = System.Windows.Media.Brushes.LightGray;				
 				double y_cur = gridY[i];
 				myLine.X1 = 0;
 				myLine.Y1 = (Height - y_cur * zoomY - dPoint.Y) * Scale;
 				myLine.X2 = Width;
 				myLine.Y2 = (Height - y_cur * zoomY  - dPoint.Y) * Scale;
-				mainWindow.Graphic.Children.Add(myLine);
+				mainWindow.GraphicCurve.Children.Add(myLine);
 			}
 		}
 
@@ -319,57 +324,17 @@ namespace WPFLab3
 					myPointCollection.Add(new System.Windows.Point(((item.X - dx) * zoomX - dPoint.X) * Scale, ((Height - (item.Y - dy) * zoomY) - dPoint.Y) * Scale));
 				}
 				myPolyline.Points = myPointCollection;
-				mainWindow.Graphic.Children.Add(myPolyline);
+				mainWindow.GraphicCurve.Children.Add(myPolyline);
 			}
-		}
-
-		private void DrawSpline(ModelApp modelApp)
-		{
-		//	double dx = X_min < 0 ? X_min : 0;
-		//	double dy = Y_min < 0 ? Y_min : 0;
-
-		//	if (modelApp.GeoObject != null && modelApp.GeoObject.Count > 0)
-		//	{
-
-		//		//Polyline myPolyline = new Polyline();
-		//		////myPolyline.Stroke = new SolidColorBrush(modelApp.ColorLine);
-		//		//myPolyline.Stroke = modelApp.ColorLine;
-		//		//myPolyline.StrokeThickness = 3;
-		//		//myPolyline.FillRule = FillRule.EvenOdd;
-		//		//PointCollection myPointCollection = new PointCollection();
-
-		//		var SortPoints = modelApp.SortedPoints();
-		//		List<ArcSegment> arcSegments = new List<ArcSegment>();
-
-		//		foreach (Point item in SortPoints)
-		//		{
-					
-		//			//myPointCollection.Add(new System.Windows.Point((item.X - dx) * zoomX, (Height - (item.Y - dy) * zoomY)));
-		//		}
-		//		Pen pen = new Pen(modelApp.ColorLine, 3);
-				
-
-
-		//		//System.Windows.Shapes.Path.DataProperty.PropertyType.
-		//		//System.Windows.Shapes.Path path = new System.Windows.Shapes.Path();
-				
-		//		mainWindow.Graphic.Children.Add();
-
-
-
-		//		//myPolyline.Points = myPointCollection;
-		//		//mainWindow.Graphic.Children.Add(myPolyline);
-		//	}
-		}
+		}		
 
 		public void Draw()
 		{
-			if (mainWindow.Graphic.Children.Count > 0) mainWindow.Graphic.Children.Clear();
+			if (mainWindow.GraphicCurve.Children.Count > 0) mainWindow.GraphicCurve.Children.Clear();
 			boundsCalculation();
 			CalculateGrid();
 			RecalculateZoom();
-			DrawGrid();
-			//
+			DrawGrid();			
 
 			switch (regime)
 			{
@@ -380,21 +345,13 @@ namespace WPFLab3
 							DrawLines(item);
 						}
 						break;
-					}					
-				case Regime.Spline:
-					{
-						foreach (ModelApp item in LinesCollection)
-						{
-							DrawSpline(item);
-						}
-						break;
-					}
+					}									
 				default:
 					break;
 			}
 					
-			DrawAxis(mainWindow.OX, X_min, X_max, true);
-			DrawAxis(mainWindow.OY, Y_min, Y_max, false);			
+			DrawAxis(mainWindow.OXCurve, X_min, X_max, true);
+			DrawAxis(mainWindow.OYCurve, Y_min, Y_max, false);			
 		}
 
 		public void SetStartView()
