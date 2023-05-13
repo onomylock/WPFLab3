@@ -84,16 +84,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Direct.cs" />
-    <Compile Include="Drawing.cs" />
-    <Compile Include="Inverce.cs" />
+    <Compile Include="Model\Direct.cs" />
+    <Compile Include="Model\Inverce.cs" />
+    <Compile Include="ViewModel\ViewModelTab.cs" />
     <Compile Include="ModelApp.cs" />
-    <Compile Include="ModelCalulation.cs" />
+    <Compile Include="Model\ModelCalulation.cs" />
+    <Compile Include="Model\IModelObject.cs" />
     <Compile Include="TabViewModelBase.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="ViewModelApp.cs" />
-    <Compile Include="ViewModelCurve.cs" />
-    <Compile Include="ViewModelView2D.cs" />
+    <Compile Include="ViewModel\ViewModelApp.cs" />
+    <Compile Include="ViewModel\ViewModelCurve.cs" />
+    <Compile Include="ViewModel\ViewModelView2D.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -137,6 +138,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.6.3\build\Fody.targets" Condition="Exists('..\packages\Fody.6.6.3\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

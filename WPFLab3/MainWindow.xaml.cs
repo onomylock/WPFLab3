@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,9 @@ namespace WPFLab3
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private ViewModelApp viewModel;
+		private ViewModelApp viewModel;	
+		private ObservableCollection<TabItem> _tabItems;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -38,28 +41,39 @@ namespace WPFLab3
 			GraphicView2D.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 			GraphicView2D.Arrange(new Rect(0, 0, GraphicView2D.DesiredSize.Width, GraphicView2D.DesiredSize.Height));
 
-			viewModel = new ViewModelApp(this);
-			DataContext = viewModel;
-			
+			try
+			{
+				viewModel = new ViewModelApp(this);
+				DataContext = viewModel;
+				
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+
+
 			//TabControl.DataContext = viewModel;
-			dataGrid.ItemsSource = viewModel.LinesCollection;			
-			dataGrid.SelectionChanged += DataGrid_SelectionChanged;		
+			//dataGrid.ItemsSource = viewModel.LinesCollection;			
+			//dataGrid.SelectionChanged += DataGrid_SelectionChanged;		
 		}
 
-		private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if(dataGrid.SelectedItem != null)
-			{
-				viewModel.SelectedLineItem = dataGrid.SelectedItem as ModelApp;
-				dataGridPoints.ItemsSource = viewModel.SelectedLineItem.GeoObject;
-			}			
-		}
+
+
+		//private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		//{
+		//	if(dataGrid.SelectedItem != null)
+		//	{
+		//		viewModel.SelectedLineItem = dataGrid.SelectedItem as ModelApp;
+		//		dataGridPoints.ItemsSource = viewModel.SelectedLineItem.GeoObject;
+		//	}			
+		//}
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
-		{				
-			if(viewModel.MouseDown)
-			{				
-				viewModel.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);				
+		{
+			if (viewModel.MouseDown)
+			{
+				viewModel.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
 				viewModel.Draw();
 			}
 			else
@@ -107,10 +121,12 @@ namespace WPFLab3
 
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if(e.Source is TabControl tc)
-			{
-				viewModel.CurrentTab = tc.SelectedItem;
-			}	
+			TabControl tc = (TabControl)sender;
+			string tabName = ((TabItem)tc.SelectedItem).Name;
+			if (tabName == "Curve")
+				viewModel.CurrentTab = Tab.Curve;
+			else
+				viewModel.CurrentTab = Tab.Curve;
 		}
 	}
 }
