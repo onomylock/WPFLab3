@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WPFLab3.Model;
@@ -17,9 +18,10 @@ namespace WPFLab3
 		public ViewModelCurve(MainWindow mainWindow)
 		{
 			base.mainWindow = mainWindow;
-			CurrentTub = Tab.Curve;
+			TabView = Tab.Curve;
 			Height = mainWindow.GraphicCurve.Height;
 			Width = mainWindow.GraphicCurve.Width;
+			IsSelected = true;
 		}
 		public override void Draw()
 		{
@@ -29,9 +31,10 @@ namespace WPFLab3
 			DrawGrid();
 
 
-			foreach (var item in ModelObjectCollection)
+			foreach (var modelObject in ModelObjectCollection)
 			{
-				DrawModelObject(item);
+				foreach(var item in modelObject)
+					DrawModelObject(item);
 			}
 
 			DrawAxis(mainWindow.OXCurve, minP.X, maxP.X, true);
@@ -52,18 +55,20 @@ namespace WPFLab3
 			maxP.X = 0;
 			maxP.Y = 0;
 
-			foreach (var item in ModelObjectCollection)
+			foreach (var modelObject in ModelObjectCollection)
 			{
-
-				(Min, Max) = FindMinMax(item);
-
-				if (Min != null && Max != null)
+				foreach(var item in modelObject)
 				{
-					minP.X = Min.X < minP.X ? Min.X : minP.X;
-					minP.Y = Min.Y < minP.Y ? Min.Y : minP.Y;
-					maxP.X = Max.X > maxP.X ? Max.X : maxP.X;
-					maxP.Y = Max.Y > maxP.Y ? Max.Y : maxP.Y;
-				}
+					(Min, Max) = FindMinMax(item);
+
+					if (Min != null && Max != null)
+					{
+						minP.X = Min.X < minP.X ? Min.X : minP.X;
+						minP.Y = Min.Y < minP.Y ? Min.Y : minP.Y;
+						maxP.X = Max.X > maxP.X ? Max.X : maxP.X;
+						maxP.Y = Max.Y > maxP.Y ? Max.Y : maxP.Y;
+					}
+				}				
 			}
 			RecalculateZoom();
 		}
@@ -146,10 +151,12 @@ namespace WPFLab3
 
 		protected override (Point, Point) FindMinMax(IModelObject modelObject)
 		{
+			Point MaxPoint = new Point();
+			Point MinPoint = new Point();
 			if (modelObject != null && modelObject.Points.Count() > 0)
 			{
-				Point MaxPoint = new Point(modelObject.Points.First().X, modelObject.Points.First().Y);
-				Point MinPoint = new Point(modelObject.Points.First().X, modelObject.Points.First().Y);
+				MaxPoint = new Point(modelObject.Points.First().X, modelObject.Points.First().Y);
+				MinPoint = new Point(modelObject.Points.First().X, modelObject.Points.First().Y);
 
 				foreach (Point item in modelObject.Points)
 				{
@@ -172,7 +179,7 @@ namespace WPFLab3
 				}
 				return (MinPoint, MaxPoint);
 			}
-			return (null, null);
-		}
+			return (MinPoint, MaxPoint);
+		}		
 	}
 }

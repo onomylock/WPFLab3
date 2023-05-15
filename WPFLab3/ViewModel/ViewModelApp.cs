@@ -16,6 +16,7 @@ using System.Windows.Media.Media3D;
 using System.Diagnostics;
 using ReactiveUI;
 using System.Security.Cryptography;
+using WPFLab3.Model;
 
 namespace WPFLab3
 {
@@ -26,30 +27,34 @@ namespace WPFLab3
 
 	public class ViewModelApp : ReactiveObject
 	{
-		public ObservableCollection<TabViewModelBase> Tabs;
+		//public ObservableCollection<TabViewModelBase> Tabs;
 		public Tab CurrentTab { get; set; }
-		public ObservableCollection<ViewModelTab> viewModelTabs { get; set; }
-		public ObservableCollection<ModelApp> LinesCollection;
+		public ObservableCollection<ViewModelTab> ViewModelTabs { get; set; }
+		
+		public ViewModelTab CurrentViewModelTub { get; set; }
+		//public ObservableCollection<ModelApp> LinesCollection;
 		//public System.Windows.Point CurrentPoint;
 		//public System.Windows.Point ButtonDownPoint;
 		//private List<double> gridX, gridY;
 		//private System.Windows.Point dPoint;
 		//public ModelApp SelectedLineItem { get; set; }
-		private MainWindow mainWindow;
+		private MainWindow _mainWindow;
 
 		//private double X_min = 0, Y_min = 0, X_max = 0, Y_max = 0, zoomX = 1, zoomY = 1;
 		//private double Height;
 		//private double Width;
-		private ModelCalulation modelCalulation = new ModelCalulation();
+		private ModelCalulation _modelCalulation;
 		//public bool MouseDown { get; set; } = false;
 		//public double Scale { get; set; } = 1;
 
 		public ViewModelApp(MainWindow mainWindow)
 		{
-			this.mainWindow = mainWindow;
-			viewModelTabs = new ObservableCollection<ViewModelTab>();
-			viewModelTabs.Add(new ViewModelCurve(mainWindow));
-			viewModelTabs.Add(new ViewModelView2D());
+			_mainWindow = mainWindow;
+			ViewModelTabs = new ObservableCollection<ViewModelTab>();
+			ViewModelTabs.Add(new ViewModelCurve(mainWindow));
+			_modelCalulation = new ModelCalulation();
+			CurrentViewModelTub = ViewModelTabs.First();
+			//viewModelTabs.Add(new ViewModelView2D());
 
 
 			//LinesCollection = new ObservableCollection<ModelApp>();
@@ -61,10 +66,36 @@ namespace WPFLab3
 			//Draw();						
 		}
 
+		public void Draw()
+		{
+			if (CurrentTab == Tab.Curve)
+			{
+				foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
+				{
+					item.Draw();
+				}
+			}
+		}
+
+		private void SetCalclulationObjectsToDrawObjects(ModelCalulation modelCalculation, Tab tab)
+		{
+			if (tab == Tab.Curve)
+			{
+				foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
+				{
+					var r = new Random();
+					var bytes = new byte[4];
+					r.NextBytes(bytes);					
+					item.ModelObjectCollection.Last().Add(new ModelObject(modelCalculation.Receivers.Select(x => x.XY).ToList(), 
+						new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]))));
+				}
+			}
+		}
+
 		private ICommand startDirectCalulation;
 		public ICommand StartDirectCalulation => startDirectCalulation ?? (startDirectCalulation = new DelegateCommand(() =>
 		{
-			modelCalulation.StartCalulationDirect();
+			_modelCalulation.StartCalulationDirect();
 		}));
 
 		private ICommand startInverceCalulation;
@@ -79,14 +110,16 @@ namespace WPFLab3
 			using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
 			{
 				System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-				modelCalulation.SetInputCalculationData(dialog.SelectedPath);				
+				if(result == System.Windows.Forms.DialogResult.OK)
+				{
+					_modelCalulation.SetInputCalculationData(dialog.SelectedPath);
+					SetCalclulationObjectsToDrawObjects(_modelCalulation, Tab.Curve);
+					Draw();
+				}				
 			}
 		}));
 
-		public void Draw()
-		{
-
-		}
+		
 
 		//private ICommand addCommand;
 		//public ICommand AddCommand => addCommand ?? (addCommand = new DelegateCommand(() =>

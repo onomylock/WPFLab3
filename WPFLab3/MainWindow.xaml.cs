@@ -22,7 +22,7 @@ namespace WPFLab3
 	public partial class MainWindow : Window
 	{
 		private ViewModelApp viewModel;	
-		private ObservableCollection<TabItem> _tabItems;
+		//private ObservableCollection<TabItem> _tabItems;
 
 		public MainWindow()
 		{
@@ -71,16 +71,30 @@ namespace WPFLab3
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (viewModel.MouseDown)
+			foreach(var item in viewModel.ViewModelTabs.Where(x => x.IsSelected && x.TabView == viewModel.CurrentTab))
 			{
-				viewModel.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
-				viewModel.Draw();
+				if(item.MouseDown)
+				{
+					item.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
+					
+				}
+				else
+				{
+					item.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
+					item.SetMousePosition(viewModel.CurrentViewModelTub.CurrentPoint);
+				}
 			}
-			else
-			{
-				viewModel.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
-				viewModel.SetMousePosition(viewModel.CurrentPoint);
-			}
+			viewModel.Draw();
+			//if(viewModel.CurrentViewModelTub.MouseDown)
+			//{
+			//	viewModel.CurrentViewModelTub.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
+			//	viewModel.Draw();
+			//}
+			//else
+			//{
+			//	viewModel.CurrentViewModelTub.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
+			//	viewModel.CurrentViewModelTub.SetMousePosition(viewModel.CurrentViewModelTub.CurrentPoint);
+			//}			
 		}
 
 		private void dataGridPoints_CurrentCellChanged(object sender, EventArgs e)
@@ -90,34 +104,34 @@ namespace WPFLab3
 
 		private void Graphic_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.MouseDown = true;
+			viewModel.CurrentViewModelTub.MouseDown = true;
 		}
 
 		private void Graphic_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.MouseDown = false;
+			viewModel.CurrentViewModelTub.MouseDown = false;
 		}
 
 		private void Graphic_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.SetStartView();
+			viewModel.CurrentViewModelTub.SetStartView();
 		}
 
 		private void Graphic_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			double scal = e.Delta < 0 ? 1.05 : 1 / 1.05;
-			viewModel.Scale *= scal;
+			viewModel.CurrentViewModelTub.Scale *= scal;
 			viewModel.Draw();
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			if (dataGrid.SelectedItem != null)
-			{
-				viewModel.SelectedLineItem.SetRandomColor();
-				viewModel.Draw();
-			}
-		}
+		//private void Button_Click(object sender, RoutedEventArgs e)
+		//{
+		//	if (dataGrid.SelectedItem != null)
+		//	{
+		//		viewModel.SelectedLineItem.SetRandomColor();
+		//		viewModel.Draw();
+		//	}
+		//}
 
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

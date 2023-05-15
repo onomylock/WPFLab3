@@ -86,11 +86,11 @@
     </ApplicationDefinition>
     <Compile Include="Model\Direct.cs" />
     <Compile Include="Model\Inverce.cs" />
+    <Compile Include="Model\ModelObject.cs" />
     <Compile Include="ViewModel\ViewModelTab.cs" />
     <Compile Include="ModelApp.cs" />
     <Compile Include="Model\ModelCalulation.cs" />
     <Compile Include="Model\IModelObject.cs" />
-    <Compile Include="TabViewModelBase.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ViewModel\ViewModelApp.cs" />
     <Compile Include="ViewModel\ViewModelCurve.cs" />

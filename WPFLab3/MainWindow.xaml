@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFLab3" d:DataContext="{d:DesignInstance Type=local:ViewModelApp}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1920" Width="1080" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="MainWindow" Height="700" Width="900" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -67,33 +67,33 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel x:Name="StackBotton" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <StackPanel x:Name="StackBottonCurve" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                                <Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>
-                                <Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>
+                                <!--<Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>-->
+                                <!--<Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>-->
                             </StackPanel>
                             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin=" 25,0,0,0">
                                 <Label Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 <Label Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </StackPanel>
-                            <StackPanel x:Name="StackLabelXY" Orientation="Vertical" VerticalAlignment="Center">
+                            <StackPanel x:Name="StackLabelXYCurve" Orientation="Vertical" VerticalAlignment="Center">
                                 <Label x:Name="LabelXCurve" Content="Lable" Width="60" Height="25" RenderTransformOrigin="0.538,0.435"/>
                                 <Label x:Name="LabelYCurve" Content="Lable" HorizontalAlignment="Left" Width="60" Height="25" VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
 
-                        <DataGrid x:Name="dataGrid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
+                        <!--<DataGrid x:Name="dataGridCurve" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Lines" Binding="{Binding Legend}"/>
                                 <DataGridTemplateColumn>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Background="{Binding ColorLine}" Click="Button_Click"/>
+                                            --><!--<Button Background="{Binding ColorLine}" Click="Button_Click"/>--><!--
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
-                        </DataGrid>
+                        </DataGrid>-->
                     </Grid>
                 </Grid>
             </TabItem>
@@ -136,33 +136,33 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel x:Name="StackBotton" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <StackPanel x:Name="StackBottonView2D" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                                <Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>
-                                <Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>
+                                <!--<Button x:Name="Add" Content="Add" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding AddCommand}"/>-->
+                                <!--<Button x:Name="Remove" Content="Remove" MaxHeight="25" MinHeight="25" MaxWidth="50" MinWidth="50" HorizontalAlignment="Center" Command="{Binding RemoveCommand}"/>-->
                             </StackPanel>
                             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin=" 25,0,0,0">
                                 <Label Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 <Label Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </StackPanel>
-                            <StackPanel x:Name="StackLabelXY" Orientation="Vertical" VerticalAlignment="Center">
+                            <StackPanel x:Name="StackLabelXYView2D" Orientation="Vertical" VerticalAlignment="Center">
                                 <Label x:Name="LabelXView2D" Content="Lable" Width="60" Height="25" RenderTransformOrigin="0.538,0.435"/>
                                 <Label x:Name="LabelYView2D" Content="Lable" HorizontalAlignment="Left" Width="60" Height="25" VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
 
-                        <DataGrid x:Name="dataGrid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
+                        <!--<DataGrid x:Name="dataGridView2D" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Lines" Binding="{Binding Legend}"/>
                                 <DataGridTemplateColumn>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Background="{Binding ColorLine}" Click="Button_Click"/>
+                                            --><!--<Button Background="{Binding ColorLine}" Click="Button_Click"/>--><!--
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
-                        </DataGrid>
+                        </DataGrid>-->
                     </Grid>
                 </Grid>
             </TabItem>

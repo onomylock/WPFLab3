@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WPFLab3.Model;
@@ -63,10 +64,15 @@ namespace WPFLab3
 			}
 		}
 
+		protected override (Point, Point) FindMinMax(IModelObject modelObject)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected override void SetLableContent(Point point)
 		{
 			mainWindow.LabelXView2D.Content = Convert.ToSingle(point.X).ToString();
 			mainWindow.LabelYView2D.Content = Convert.ToSingle(point.Y).ToString();
-		}
+		}		
 	}
 }

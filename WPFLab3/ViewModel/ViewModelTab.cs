@@ -17,8 +17,9 @@ namespace WPFLab3
 {
 	public abstract class ViewModelTab : ReactiveObject
 	{
-		public Tab CurrentTub { get; set; }
-		public ObservableCollection<IModelObject> ModelObjectCollection { get; set; } = new ObservableCollection<IModelObject>();
+		public Tab TabView { get; set; }
+		public bool IsSelected { get; set; }
+		public ObservableCollection<List<IModelObject>> ModelObjectCollection { get; set; } = new ObservableCollection<List<IModelObject>>();
 		public Point CurrentPoint { get; set; } = new Point();
 		public Point ButtonDownPoint { get; set; } = new Point();
 		public double Scale { get; set; } = 1;
@@ -83,7 +84,7 @@ namespace WPFLab3
 			for (int i = 0; i < gridY.Count; ++i)
 			{
 				Line myLine = new Line();
-				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
+				myLine.Stroke = Brushes.LightGray;
 				double y_cur = gridY[i];
 				myLine.X1 = 0;
 				myLine.Y1 = (Height - y_cur * zoomP.Y - dPoint.Y) * Scale;
@@ -131,8 +132,8 @@ namespace WPFLab3
 
 		protected virtual void RecalculateZoom()
 		{
-			zoomP.X = Width / Math.Abs(maxP.X - minP.X);
-			zoomP.Y = Height / Math.Abs(maxP.Y - minP.Y);
+			zoomP.X = maxP.X > 0 && minP.X > 0 ? Width / Math.Abs(maxP.X - minP.X) : 1;
+			zoomP.Y = maxP.Y > 0 && minP.Y > 0 ? Height / Math.Abs(maxP.Y - minP.Y) : 1;
 		}
 
 		protected abstract void SetLableContent(Point point);

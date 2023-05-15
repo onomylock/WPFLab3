@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Animation;
 
@@ -12,22 +13,24 @@ namespace WPFLab3
 	{				
 		public void Calculate(List<Cell> cells, List<Receiver> receivers)
 		{
-			double r, square, x, y, coef;
+			double r, square, x, y, coef, bx, by;
 
-			foreach (Receiver receiver in receivers)
+			foreach (var receiver in receivers)
 			{
-				foreach (Cell cell in cells)
+				foreach (var cell in cells)
 				{
 					r = GetR(cell, receiver);
 					square = GetCellArea(cell);
 					x = receiver.XY.X - cell.Center.X;
 					y = receiver.XY.Y - cell.Center.Y;
 					coef = square * cell.I / (4 * Math.PI * Math.Pow(r, 2));
-
-					receiver.B.X = coef * cell.P.X * 3 * Math.Pow(x, 2) / Math.Pow(r, 2)
+					
+					bx = coef * cell.P.X * 3 * Math.Pow(x, 2) / Math.Pow(r, 2)
 						+ cell.P.Y * 3 * x * y / Math.Pow(r, 2);
-					receiver.B.Y = coef * cell.P.X * 3 * x * y / Math.Pow(r, 2)
+					by = coef * cell.P.X * 3 * x * y / Math.Pow(r, 2)
 						+ cell.P.Y * (3 * Math.Pow(y, 2) / Math.Pow(r, 2) - 1);
+
+					receiver.B = new Point(bx, by);
 				}
 			}			
 		}
