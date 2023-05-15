@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Windows.Forms.AxHost;
 
 namespace WPFLab3
 {
@@ -71,20 +72,33 @@ namespace WPFLab3
 
 		private void StackPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			foreach(var item in viewModel.ViewModelTabs.Where(x => x.IsSelected && x.TabView == viewModel.CurrentTab))
+			foreach(var item in viewModel.ViewModelTabs.Where(x => x.Value.IsSelected && x.Key == viewModel.CurrentTab))
 			{
-				if(item.MouseDown)
+				if(item.Value.MouseDown)
 				{
-					item.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
-					
+					if(viewModel.CurrentTab == Tab.Curve)
+						item.Value.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);					
+					else
+						item.Value.ButtonDownPoint = Mouse.GetPosition(this.GraphicView2D);
 				}
 				else
 				{
-					item.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
-					item.SetMousePosition(viewModel.CurrentViewModelTub.CurrentPoint);
+					if (viewModel.CurrentTab == Tab.Curve)
+					{
+						item.Value.CurrentPoint = Mouse.GetPosition(this.GraphicCurve);
+						item.Value.SetMousePosition(item.Value.CurrentPoint);
+					}						
+					else
+					{
+						item.Value.CurrentPoint = Mouse.GetPosition(this.GraphicView2D);
+						item.Value.SetMousePosition(item.Value.CurrentPoint);
+					}
+						
+					//item.SetMousePosition(viewModel.CurrentViewModelTub.CurrentPoint);
 				}
 			}
-			viewModel.Draw();
+			if(viewModel.ViewModelTabs.Where(x => x.Value.IsSelected && x.Key == viewModel.CurrentTab && x.Value.MouseDown == true).Count() > 0)
+				viewModel.Draw();
 			//if(viewModel.CurrentViewModelTub.MouseDown)
 			//{
 			//	viewModel.CurrentViewModelTub.ButtonDownPoint = Mouse.GetPosition(this.GraphicCurve);
@@ -104,23 +118,45 @@ namespace WPFLab3
 
 		private void Graphic_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.CurrentViewModelTub.MouseDown = true;
+			//viewModel..MouseDown = true;
+			//viewModel.ViewModelTabs.Where(x => x.TabView == viewModel.CurrentTab).First().MouseDown = true;
+			foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == viewModel.CurrentTab))
+			{
+				item.Value.MouseDown = true;
+			}
 		}
 
 		private void Graphic_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.CurrentViewModelTub.MouseDown = false;
+			//viewModel.CurrentViewModelTub.MouseDown = false;
+			//viewModel.ViewModelTabs.Where(x => x.TabView == viewModel.CurrentTab).First().MouseDown = false;
+			foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == viewModel.CurrentTab))
+			{
+				item.Value.MouseDown = false;
+			}
 		}
 
 		private void Graphic_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			viewModel.CurrentViewModelTub.SetStartView();
+			//viewModel.ViewModelTabs.Where(x => x.TabView == viewModel.CurrentTab).First().SetStartView();
+			foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == viewModel.CurrentTab))
+			{
+				item.Value.SetStartView();
+			}
 		}
 
 		private void Graphic_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			double scal = e.Delta < 0 ? 1.05 : 1 / 1.05;
-			viewModel.CurrentViewModelTub.Scale *= scal;
+			foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == viewModel.CurrentTab))
+			{
+				item.Value.Scale *= scal;
+			}
+			//viewModel.ViewModelTabs.(x =>
+			//{
+			//	if (x.TabView == viewModel.CurrentTab)
+			//		x.Scale *= scal;
+			//});
 			viewModel.Draw();
 		}
 
@@ -133,14 +169,50 @@ namespace WPFLab3
 		//	}
 		//}
 
+		//private void Graphic_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		//{
+		//	viewModel.MouseDown = true;
+		//}
+
+		//private void Graphic_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		//{
+		//	viewModel.MouseDown = false;
+		//}
+
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			TabControl tc = (TabControl)sender;
 			string tabName = ((TabItem)tc.SelectedItem).Name;
 			if (tabName == "Curve")
+			{
 				viewModel.CurrentTab = Tab.Curve;
+				//foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == Tab.Curve))
+				//{
+				//	item.Value.IsSelected = true;
+				//}
+				foreach (var item in viewModel.ViewModelTabs)
+				{
+					if (item.Key == Tab.Curve)
+						item.Value.IsSelected = true;
+					else if(item.Key == Tab.View2D)
+						item.Value.IsSelected = false;
+				}
+			}				
 			else
-				viewModel.CurrentTab = Tab.Curve;
+			{
+				viewModel.CurrentTab = Tab.View2D;
+				//foreach (var item in viewModel.ViewModelTabs.Where(x => x.Key == Tab.View2D))
+				//{
+				//	item.Value.IsSelected = true;
+				//}
+				foreach (var item in viewModel.ViewModelTabs)
+				{
+					if (item.Key == Tab.Curve)
+						item.Value.IsSelected = false;
+					else if (item.Key == Tab.View2D)
+						item.Value.IsSelected = true;
+				}
+			}				
 		}
 	}
 }

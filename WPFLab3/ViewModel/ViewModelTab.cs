@@ -17,7 +17,9 @@ namespace WPFLab3
 {
 	public abstract class ViewModelTab : ReactiveObject
 	{
-		public Tab TabView { get; set; }
+		//public Tab TabView { get; set; }
+		public Point MaxPoint { get; set; }
+		public Point MinPoint { get; set; }
 		public bool IsSelected { get; set; }
 		public ObservableCollection<List<IModelObject>> ModelObjectCollection { get; set; } = new ObservableCollection<List<IModelObject>>();
 		public Point CurrentPoint { get; set; } = new Point();
@@ -44,7 +46,7 @@ namespace WPFLab3
 			Draw();
 		}
 
-		public void SetMousePosition(System.Windows.Point Point)
+		public void SetMousePosition(Point Point)
 		{
 
 			double X = Point.X;
@@ -55,8 +57,8 @@ namespace WPFLab3
 				X = (X / Scale + dPoint.X) / (zoomP.X);
 				Y = (Height - Y / Scale - dPoint.Y) / (zoomP.Y);
 
-				double xdiv = (maxP.X - minP.X) / gridX.Count;
-				double ydiv = (maxP.Y - minP.Y) / gridY.Count;
+				//double xdiv = (maxP.X - minP.X) / gridX.Count;
+				//double ydiv = (maxP.Y - minP.Y) / gridY.Count;
 			}						
 			SetLableContent(new Point(X, Y));			
 		}
@@ -72,7 +74,7 @@ namespace WPFLab3
 			for (int i = 0; i < gridX.Count; ++i)
 			{
 				Line myLine = new Line();
-				myLine.Stroke = System.Windows.Media.Brushes.LightGray;
+				myLine.Stroke = Brushes.LightGray;
 				double x_cur = gridX[i];
 				myLine.X1 = (x_cur * zoomP.X - dPoint.X) * Scale;
 				myLine.Y1 = 0;

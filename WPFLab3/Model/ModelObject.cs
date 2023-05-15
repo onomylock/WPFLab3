@@ -10,6 +10,12 @@ namespace WPFLab3.Model
 {
 	public class ModelObject : IModelObject
 	{
+		public ModelObject(List<Point> points, Brush color, double value)
+		{
+			Points = points;
+			Color = color;
+			Value = value;
+		}
 		public ModelObject(List<Point> points, Brush color)
 		{
 			Points = points;
@@ -18,5 +24,6 @@ namespace WPFLab3.Model
 
 		public List<Point> Points { get; set; }
 		public Brush Color { get; set; }
+		public double Value { get; set; } = 0;
 	}
 }

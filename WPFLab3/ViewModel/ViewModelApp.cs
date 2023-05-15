@@ -29,9 +29,10 @@ namespace WPFLab3
 	{
 		//public ObservableCollection<TabViewModelBase> Tabs;
 		public Tab CurrentTab { get; set; }
-		public ObservableCollection<ViewModelTab> ViewModelTabs { get; set; }
-		
-		public ViewModelTab CurrentViewModelTub { get; set; }
+		//public ObservableCollection<ViewModelTab> ViewModelTabs { get; set; }
+		public Dictionary<Tab, ViewModelTab> ViewModelTabs { get; set; }
+
+		//public ViewModelTab CurrentViewModelTub { get; set; }
 		//public ObservableCollection<ModelApp> LinesCollection;
 		//public System.Windows.Point CurrentPoint;
 		//public System.Windows.Point ButtonDownPoint;
@@ -50,10 +51,13 @@ namespace WPFLab3
 		public ViewModelApp(MainWindow mainWindow)
 		{
 			_mainWindow = mainWindow;
-			ViewModelTabs = new ObservableCollection<ViewModelTab>();
-			ViewModelTabs.Add(new ViewModelCurve(mainWindow));
+			//ViewModelTabs = new ObservableCollection<ViewModelTab>();
+			ViewModelTabs = new Dictionary<Tab, ViewModelTab>();
+			//ViewModelTabs.Add(new ViewModelCurve(mainWindow));
+			ViewModelTabs.Add(Tab.Curve, new ViewModelCurve(mainWindow));
+			ViewModelTabs.Add(Tab.View2D, new ViewModelView2D(mainWindow));
 			_modelCalulation = new ModelCalulation();
-			CurrentViewModelTub = ViewModelTabs.First();
+			//CurrentViewModelTub = ViewModelTabs.First();
 			//viewModelTabs.Add(new ViewModelView2D());
 
 
@@ -68,12 +72,16 @@ namespace WPFLab3
 
 		public void Draw()
 		{
-			if (CurrentTab == Tab.Curve)
+			//if (CurrentTab == Tab.Curve)
+			//{
+			//	foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
+			//	{
+			//		item.Draw();
+			//	}
+			//}
+			foreach (var item in ViewModelTabs.Where(x => x.Value.IsSelected))
 			{
-				foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
-				{
-					item.Draw();
-				}
+				item.Value.Draw();
 			}
 		}
 
@@ -81,15 +89,33 @@ namespace WPFLab3
 		{
 			if (tab == Tab.Curve)
 			{
-				foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
+				foreach (var item in ViewModelTabs.Where(x => x.Key == Tab.Curve))
 				{
 					var r = new Random();
 					var bytes = new byte[4];
 					r.NextBytes(bytes);					
-					item.ModelObjectCollection.Last().Add(new ModelObject(modelCalculation.Receivers.Select(x => x.XY).ToList(), 
-						new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]))));
+					item.Value.ModelObjectCollection.Add(new List<IModelObject>(){ new ModelObject(modelCalculation.Receivers.Select(x => x.XY).ToList(),
+						new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3])))});
 				}
 			}
+			if (tab == Tab.View2D)
+			{
+				foreach (var item in ViewModelTabs.Where(x => x.Key == Tab.View2D))
+				{
+					var r = new Random();
+					var bytes = new byte[4];
+					item.Value.ModelObjectCollection.Add(new List<IModelObject>());
+					foreach (var cell in modelCalculation.Cells)
+					{
+						r.NextBytes(bytes);
+						item.Value.ModelObjectCollection.Last().Add(new ModelObject(cell.Nodes.ToList(),
+							new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3])), cell.I));
+					}
+					//r.NextBytes(bytes);
+					//item.ModelObjectCollection.Add(new List<IModelObject>(){ new ModelObject(modelCalculation.Receivers.Select(x => x.XY).ToList(),
+					//	new SolidColorBrush(Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3])))});
+				}
+			}	
 		}
 
 		private ICommand startDirectCalulation;
@@ -109,11 +135,16 @@ namespace WPFLab3
 		{
 			using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
 			{
+				//dialog.RootFolder = Directory.GetCurrentDirectory();
+				dialog.RootFolder = Environment.SpecialFolder.UserProfile;
 				System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 				if(result == System.Windows.Forms.DialogResult.OK)
 				{
 					_modelCalulation.SetInputCalculationData(dialog.SelectedPath);
-					SetCalclulationObjectsToDrawObjects(_modelCalulation, Tab.Curve);
+					if (_modelCalulation.Receivers.Count > 0)
+						SetCalclulationObjectsToDrawObjects(_modelCalulation, Tab.Curve);
+					if (_modelCalulation.Cells.Count > 0)
+						SetCalclulationObjectsToDrawObjects(_modelCalulation, Tab.View2D);
 					Draw();
 				}				
 			}

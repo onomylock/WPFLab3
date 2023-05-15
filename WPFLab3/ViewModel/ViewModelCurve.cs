@@ -18,7 +18,7 @@ namespace WPFLab3
 		public ViewModelCurve(MainWindow mainWindow)
 		{
 			base.mainWindow = mainWindow;
-			TabView = Tab.Curve;
+			//TabView = Tab.Curve;
 			Height = mainWindow.GraphicCurve.Height;
 			Width = mainWindow.GraphicCurve.Width;
 			IsSelected = true;
@@ -135,7 +135,7 @@ namespace WPFLab3
 
 				foreach (Point item in SortPoints)
 				{
-					myPointCollection.Add(new System.Windows.Point(((item.X - dx) * zoomP.X - dPoint.X) * Scale,
+					myPointCollection.Add(new Point(((item.X - dx) * zoomP.X - dPoint.X) * Scale,
 						(Height - (item.Y - dy) * zoomP.Y - dPoint.Y) * Scale));
 				}
 				myPolyline.Points = myPointCollection;
@@ -177,7 +177,7 @@ namespace WPFLab3
 						MinPoint.Y = item.Y;
 					}
 				}
-				return (MinPoint, MaxPoint);
+				//return (MinPoint, MaxPoint);
 			}
 			return (MinPoint, MaxPoint);
 		}		

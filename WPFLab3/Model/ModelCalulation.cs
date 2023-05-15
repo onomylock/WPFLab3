@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
@@ -51,8 +52,9 @@ namespace WPFLab3
 		public List<Cell> Cells { get; set; }
 		public List<Receiver> Receivers { get; set; }
 
-		private Direct direct;
-
+		private Direct _direct;
+		private Regex _regexCell = new Regex(@"\w*.cells.txt$");
+		private Regex _regexReceiver = new Regex(@"\w*.receivers.txt$");
 		public ModelCalulation()
 		{
 			Cells = new List<Cell>();
@@ -61,8 +63,8 @@ namespace WPFLab3
 		
 		public void StartCalulationDirect()
 		{
-			direct = new Direct();
-			direct.Calculate(Cells, Receivers);
+			_direct = new Direct();
+			_direct.Calculate(Cells, Receivers);
 		}
 
 		public void SetInputCalculationData(string directoryPath)
@@ -73,7 +75,8 @@ namespace WPFLab3
 			{
 				if(File.Exists(file))
 				{
-					if (file == "*.cells.txt")
+
+					if (_regexCell.Match(file).Success)
 					{						
 						using(var sr = new StreamReader(file))
 						{
@@ -89,7 +92,7 @@ namespace WPFLab3
 							}
 						}
 					}
-					else if (file == "*.receivers.txt")
+					else if (_regexReceiver.Match(file).Success)
 					{						
 						using (var sr = new StreamReader(file))
 						{
@@ -98,8 +101,8 @@ namespace WPFLab3
 							for (int i = 0; i < count; i++)
 							{
 								String[] arr = sr.ReadLine().Split();
-								Receivers.Add(new Receiver(new Point(double.Parse(arr[1]), double.Parse(arr[2])),
-														   new Point(double.Parse(arr[3]), double.Parse(arr[4]))));
+								Receivers.Add(new Receiver(new Point(double.Parse(arr[0]), double.Parse(arr[1])),
+														   new Point(double.Parse(arr[2]), double.Parse(arr[3]))));
 							}
 						}
 					}

@@ -28,7 +28,7 @@
         </Menu>
 
         <TabControl x:Name="TabControl" Grid.Row="1" SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="Curve">
+            <TabItem Header="Curve" Name="Curve">
                 <Grid Background="Bisque">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
@@ -97,7 +97,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="View2D">
+            <TabItem Header="View2D" Name="View2D">
                 <Grid Background="Bisque">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>

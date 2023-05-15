@@ -13,5 +13,6 @@ namespace WPFLab3.Model
 	{
 		List<Point> Points { get; set; }
 		Brush Color { get; set; }
+		double Value { get; set; }
 	}
 }
