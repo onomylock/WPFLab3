@@ -26,59 +26,27 @@ namespace WPFLab3
 	}
 
 	public class ViewModelApp : ReactiveObject
-	{
-		//public ObservableCollection<TabViewModelBase> Tabs;
-		public Tab CurrentTab { get; set; }
-		//public ObservableCollection<ViewModelTab> ViewModelTabs { get; set; }
+	{		
+		public Tab CurrentTab { get; set; }		
 		public Dictionary<Tab, ViewModelTab> ViewModelTabs { get; set; }
-
-		//public ViewModelTab CurrentViewModelTub { get; set; }
-		//public ObservableCollection<ModelApp> LinesCollection;
-		//public System.Windows.Point CurrentPoint;
-		//public System.Windows.Point ButtonDownPoint;
-		//private List<double> gridX, gridY;
-		//private System.Windows.Point dPoint;
-		//public ModelApp SelectedLineItem { get; set; }
 		private MainWindow _mainWindow;
-
-		//private double X_min = 0, Y_min = 0, X_max = 0, Y_max = 0, zoomX = 1, zoomY = 1;
-		//private double Height;
-		//private double Width;
-		private ModelCalulation _modelCalulation;
-		//public bool MouseDown { get; set; } = false;
-		//public double Scale { get; set; } = 1;
+		private ModelCalulation _modelCalulation;		
 
 		public ViewModelApp(MainWindow mainWindow)
 		{
-			_mainWindow = mainWindow;
-			//ViewModelTabs = new ObservableCollection<ViewModelTab>();
+			_mainWindow = mainWindow;			
 			ViewModelTabs = new Dictionary<Tab, ViewModelTab>();
-			//ViewModelTabs.Add(new ViewModelCurve(mainWindow));
-			ViewModelTabs.Add(Tab.Curve, new ViewModelCurve(mainWindow));
-			ViewModelTabs.Add(Tab.View2D, new ViewModelView2D(mainWindow));
-			_modelCalulation = new ModelCalulation();
-			//CurrentViewModelTub = ViewModelTabs.First();
-			//viewModelTabs.Add(new ViewModelView2D());
-
-
-			//LinesCollection = new ObservableCollection<ModelApp>();
-			//LinesCollection.Add(new ModelApp("Legend " + (LinesCollection.Count() + 1).ToString()));
-			//LinesCollection.Last().GeoObject = new ObservableCollection<Point> { new Point(1, 2), new Point(9, 7) };
-			//dPoint = new System.Windows.Point(0, 0);
-			//Height = mainWindow.GraphicCurve.Height;
-			//Width = mainWindow.GraphicCurve.Width;
-			//Draw();						
+			ViewModelView2D tmpView = new ViewModelView2D(mainWindow);
+			ViewModelCurve tmpCurve = new ViewModelCurve(mainWindow);
+			tmpView.Oid = Guid.NewGuid();
+			tmpCurve.Oid = tmpView.Oid;
+			ViewModelTabs.Add(Tab.Curve, tmpCurve);
+			ViewModelTabs.Add(Tab.View2D, tmpView);			
+			_modelCalulation = new ModelCalulation();						
 		}
 
 		public void Draw()
-		{
-			//if (CurrentTab == Tab.Curve)
-			//{
-			//	foreach (var item in ViewModelTabs.Where(x => x.TabView == Tab.Curve && x.IsSelected))
-			//	{
-			//		item.Draw();
-			//	}
-			//}
+		{			
 			foreach (var item in ViewModelTabs.Where(x => x.Value.IsSelected))
 			{
 				item.Value.Draw();

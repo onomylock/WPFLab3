@@ -18,7 +18,6 @@ namespace WPFLab3
 		public ViewModelCurve(MainWindow mainWindow)
 		{
 			base.mainWindow = mainWindow;
-			//TabView = Tab.Curve;
 			Height = mainWindow.GraphicCurve.Height;
 			Width = mainWindow.GraphicCurve.Width;
 			IsSelected = true;

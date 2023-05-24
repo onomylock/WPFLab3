@@ -21,6 +21,7 @@ namespace WPFLab3
 		public Point MaxPoint { get; set; }
 		public Point MinPoint { get; set; }
 		public bool IsSelected { get; set; }
+		public Guid Oid { get; set; }
 		public ObservableCollection<List<IModelObject>> ModelObjectCollection { get; set; } = new ObservableCollection<List<IModelObject>>();
 		public Point CurrentPoint { get; set; } = new Point();
 		public Point ButtonDownPoint { get; set; } = new Point();
@@ -56,6 +57,9 @@ namespace WPFLab3
 			{
 				X = (X / Scale + dPoint.X) / (zoomP.X);
 				Y = (Height - Y / Scale - dPoint.Y) / (zoomP.Y);
+
+				//X = (X / Scale + dPoint.X) / (zoomP.X);
+				//Y = (Height - Y / Scale - dPoint.Y);
 
 				//double xdiv = (maxP.X - minP.X) / gridX.Count;
 				//double ydiv = (maxP.Y - minP.Y) / gridY.Count;
