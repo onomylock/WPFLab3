@@ -85,9 +85,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Direct.cs" />
     <Compile Include="Model\Inverce.cs" />
     <Compile Include="Model\ModelObject.cs" />
+    <Compile Include="Model\Receiver.cs" />
+    <Compile Include="Model\Vector3d.cs" />
     <Compile Include="ViewModel\ViewModelTab.cs" />
     <Compile Include="ModelApp.cs" />
     <Compile Include="Model\ModelCalulation.cs" />

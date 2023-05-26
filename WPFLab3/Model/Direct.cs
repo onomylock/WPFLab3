@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media.Animation;
 
-namespace WPFLab3
+namespace WPFLab3.Model
 {
 	public class Direct
 	{
@@ -79,7 +73,7 @@ namespace WPFLab3
 						Cells[m].Nodes[5] = nodes[((i + 1) * ((int)num.Y + 1) + j) * ((int)num.Z + 1) + k + 1];
 						Cells[m].Nodes[6] = nodes[(i * ((int)num.Y + 1) + j + 1) * ((int)num.Z + 1) + k + 1];
 						Cells[m].Nodes[7] = nodes[((i + 1) * ((int)num.Y + 1) + j + 1) * ((int)num.Z + 1) + k + 1];
-
+						Cells[m].InitCell();
 
 
 						if (i > 0)
